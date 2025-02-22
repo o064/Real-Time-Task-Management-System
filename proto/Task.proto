@@ -53,8 +53,7 @@ message DeleteTaskRequest{
     string taskId=1;
 }
 message DeleteTaskResponse{
-    Task task =1;
-    bool success = 2;
+    bool success = 1;
 }
 // list tasks
 message ListTasksRequest{

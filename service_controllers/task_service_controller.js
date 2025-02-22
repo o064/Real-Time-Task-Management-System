@@ -8,7 +8,7 @@ const taskServiceController = {
             const task = await taskService.createTask(title, description, userId);
             callback(null, { 
                 task: { 
-                    task_id: task.taskId.toString(),
+                    taskId: task.taskId.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -30,7 +30,7 @@ const taskServiceController = {
             const task = await taskService.getTask(taskId);
             callback(null, { 
                 task: { 
-                    task_id: task.taskId.toString(),
+                    taskId: task.taskId.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -52,7 +52,7 @@ const taskServiceController = {
             const task = await taskService.updateTask(taskId,title,description,status);
             callback(null, { 
                 task: { 
-                    task_id: task.taskId.toString(),
+                    taskId: task.taskId.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -71,7 +71,7 @@ const taskServiceController = {
     DeleteTask: async (call, callback) => {
         const { taskId } = call.request;
         try {
-            const result  = await taskService.DeleteTask(taskId);
+            const result  = await taskService.deleteTask(taskId);
             callback(null, { success: result.success });
         } catch (err) {
             callback({
@@ -86,7 +86,7 @@ const taskServiceController = {
             const tasks = await taskService.ListTasks(userId);
             callback(null, { 
                 tasks: tasks.map(task => ({
-                    task_id: task.taskId.toString(),
+                    taskId: task.taskId.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -103,4 +103,4 @@ const taskServiceController = {
         }
     }
 };
-module.exports = taskServiceController
+module.exports = taskServiceImplementation
