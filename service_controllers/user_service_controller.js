@@ -7,7 +7,7 @@ const userServiceImplementation = {
         try {
             const User = await UserService.createUser(email, userName, password);
             callback(null, { 
-                User: { 
+                user: { 
                     userId: User.userId.toString(),
                     email: User.email,
                     userName: User.userName,
@@ -28,7 +28,7 @@ const userServiceImplementation = {
         try {
             const User = await UserService.getUser(userId);
             callback(null, { 
-                User: { 
+                user: { 
                     userId: User.userId.toString(),
                     email: User.email,
                     userName: User.userName,
@@ -45,11 +45,11 @@ const userServiceImplementation = {
         }
     },
     UpdateUser: async (call, callback) => {
-        const { UserId,userName } = call.request;
+        const { userId,userName } = call.request;
         try {
-            const User = await UserService.updateUser(UserId,userName);
+            const User = await UserService.updateUser(userId,userName);
             callback(null, { 
-                User: { 
+                user: { 
                     userId: User.userId.toString(),
                     email: User.email,
                     userName: User.userName,
@@ -66,9 +66,9 @@ const userServiceImplementation = {
         }
     },
     DeleteUser: async (call, callback) => {
-        const { UserId } = call.request;
+        const { userId } = call.request;
         try {
-            const result  = await UserService.deleteUser(UserId);
+            const result  = await UserService.deleteUser(userId);
             callback(null, { success: result.success });
         } catch (err) {
             callback({

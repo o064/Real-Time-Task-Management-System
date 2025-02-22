@@ -1,6 +1,10 @@
 const User = require('../database/models/User');
+//createUser
+const createUser = async (email, userName, password) => {
+    return await User.create({ email, userName, password });
+};
 // Get a User by ID
-const getUser =  async (userId) => {
+const getUser = async (userId) => {
     const User = await User.findById(mongoose.Types.ObjectId(userId));
     if (!User) throw new Error('User not found');
     return User;
@@ -18,13 +22,14 @@ const updateUser = async (userId, userName) => {
 }
 
 // Delete a User
-const deleteUser =  async (UserId) => {
+const deleteUser = async (UserId) => {
     const User = await User.findByIdAndDelete(mongoose.Types.ObjectId(UserId));
     if (!User) throw new Error('User not found');
     return { success: true };
 }
 
 module.exports = {
+    createUser,
     getUser,
     updateUser,
     deleteUser,
