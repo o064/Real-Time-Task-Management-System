@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package UserPackage;
+package userPackage;
 
 service UserService {
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
-    rpc GetUser (GetUserRequest) returns (GetUseUserResponse);
+    rpc GetUser (GetUserRequest) returns (GetUserResponse);
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
     rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
 }
@@ -42,7 +42,7 @@ message UpdateUserRequest{
     string userId=1;
     string userName= 2;
 }
-message UpdateUSerResponse{
+message UpdateUserResponse{
     User user =1;
 }
 // delete User 

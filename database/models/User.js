@@ -77,7 +77,7 @@ userSchema.statics.logIn = async function(email,password){
 userSchema.methods.generateToken =  function (){  
     const maxage = 3*24*60*60;
     return jwt.sign({
-        id: this.id,
+        userId: this.id,
         email : this.email,
         isAdmin: this.isAdmin
     }, process.env.SECRET,{expiresIn:maxage});

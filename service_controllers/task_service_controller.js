@@ -1,7 +1,7 @@
 const grpc = require('@grpc/grpc-js');
 const taskService = require('../services/task_service');
 // Implement the TaskService
-const taskServiceController = {
+const taskServiceImplementation = {
     CreateTask: async (call, callback) => {
         const { title, description, userId } = call.request;
         try {

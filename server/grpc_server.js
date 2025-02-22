@@ -4,28 +4,16 @@ const taskServiceImplementation = require('../service_controllers/task_service_c
 const userServiceImplementation = require('../service_controllers/user_service_controller');
 
 
-// load task.protofile
-const Task_PROTO_PATH = __dirname + '/proto/task.proto';
-const taskPackageDefinition = protoLoader.loadSync(Task_PROTO_PATH, {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-});
-const taskProto = grpc.loadPackageDefinition(taskPackageDefinition).task;
+// Load Protobuf definitions
+const loadProto = (path) => {
+    return grpc.loadPackageDefinition(protoLoader.loadSync(path, {
+        keepCase: true, longs: String, enums: String, defaults: true, oneofs: true,
+    }));
+};
 
+const taskProto = loadProto(__dirname + '/../proto/task.proto').taskPackage;
+const userProto = loadProto(__dirname + '/../proto/user.proto').userPackage;
 
-// load user.protofile
-const User_PROTO_PATH = __dirname + '/proto/user.proto';
-const userPackageDefinition = protoLoader.loadSync(User_PROTO_PATH, {
-    keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true,
-});
-const userProto = grpc.loadPackageDefinition(userPackageDefinition).user;
 
 
 // Start the gRPC server
@@ -34,8 +22,7 @@ const startGrpcServer = ()=>{
     server.addService(taskProto.TaskService.service, taskServiceImplementation);
     server.addService(userProto.UserService.service, userServiceImplementation);
     server.bindAsync('0.0.0.0:5000', grpc.ServerCredentials.createInsecure(), () => {
-        console.log('🚀 gRPC Server running on port 5000');
-        server.start();
+        console.log('gRPC Server running on port 5000');
     });
     
 }

@@ -1,7 +1,7 @@
 const grpc = require('@grpc/grpc-js');
 const UserService = require('../services/user_service');
 // Implement the UserService
-const UserServiceController = {
+const userServiceImplementation = {
     CreateUser: async (call, callback) => {
         const {email,userName,password} = call.request;
         try {
