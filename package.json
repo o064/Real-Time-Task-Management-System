@@ -1,0 +1,30 @@
+{
+  "name": "real-time-task-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o064/Real-Time-Task-Management-System.git"
+  },
+  "author": "Omar Mohamed",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/o064/Real-Time-Task-Management-System/issues"
+  },
+  "homepage": "https://github.com/o064/Real-Time-Task-Management-System#readme",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.12.6",
+    "@grpc/proto-loader": "^0.7.13",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.10.1",
+    "nodemon": "^3.1.9",
+    "validator": "^13.12.0"
+  }
+}
