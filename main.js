@@ -1,5 +1,5 @@
-const connectDB = require('./database/connection/db');
-const startGrpcServer =require('./server/grpc_server')
+const connectDB = require('./src/database/connection/db');
+const startGrpcServer =require('./src/server/grpc_server')
 // const cookieParser = require('cookie-parser');
 
 //config
