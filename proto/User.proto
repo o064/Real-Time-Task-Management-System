@@ -3,6 +3,7 @@ syntax = "proto3";
 package user;
 
 service UserService {
+    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
     rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
     rpc GetUser (GetUserRequest) returns (GetUserResponse);
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
@@ -11,7 +12,7 @@ service UserService {
 // Task message definition
 message User {
     string userId = 1;
-    string userName = 2;  
+    string userName = 2;
     string email = 3; 
     string password = 4;
     bool iAdmin= 5 ;
@@ -20,6 +21,15 @@ message User {
 }
 
 // req && res for  CRUD opertaion
+//login
+message LoginUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginUserResponse {
+    User user = 1;
+}
 
 //create User 
 message CreateUserRequest{

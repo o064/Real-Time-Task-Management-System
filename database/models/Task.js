@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const textRegex = /^[A-Za-z0-9\s.,!?()-]{3,}$/;
 const TaskSchema = new mongoose.Schema({
-    taskId: { type: mongoose.Schema.Types.ObjectId, auto: true }, // auto generated
-    Title: {
+    title: {
         type: String,
         required: [true, "Title is required"],
         trim:true,
@@ -16,7 +15,7 @@ const TaskSchema = new mongoose.Schema({
         match: textRegex
     }
     ,
-    Status: {
+    status: {
         type: String,
         enum: ["Pending", "In Progress", "Completed"],
         default: "Pending",
@@ -27,7 +26,7 @@ const TaskSchema = new mongoose.Schema({
 },
 {
     toJSON:{
-        transform: (doc,retuDoc)=> _.omit(retuDoc,['__v','taskId'])
+        transform: (doc,retuDoc)=> _.omit(retuDoc,['__v','_id'])
     }
 }
 ,{timestamps:true});

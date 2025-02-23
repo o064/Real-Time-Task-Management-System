@@ -12,7 +12,6 @@ const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\*\.\@\#\$\%\^\(\
 require('dotenv').config();
 
 const userSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, auto: true },
     userName: {
         type: String,
         required: [true, "Username is required"],
@@ -47,11 +46,11 @@ const userSchema = new mongoose.Schema({
 },
 {
     toJSON:{
-        transform: (doc,retuDoc)=> _.omit(retuDoc,['__v','password','isAdmin','userId','createdAt','updatedAt'])
+        transform: (doc,retuDoc)=> _.omit(retuDoc,['__v','password','isAdmin','_id','createdAt','updatedAt'])
     }
 },{timestamps:true});
 
-
+// presave hook to hash password
 userSchema.pre('save',async function(next){
     if (this.isModified('password')) {  
         const salt = await bcrypt.genSalt(10);
@@ -59,6 +58,7 @@ userSchema.pre('save',async function(next){
     }
     next();
 })
+// function to check the username and password to login 
 userSchema.statics.logIn = async function(email,password){
     if(!email || !password){
         throw new Error("Email and password is required");
@@ -73,9 +73,9 @@ userSchema.statics.logIn = async function(email,password){
     }
     throw new Error("email or password is not correct");
 }
-
+// Generate token for jwt 
 userSchema.methods.generateToken =  function (){  
-    const maxage = 3*24*60*60;
+    const maxage = 3*24*60*60; // 3 days age token  in seconds
     return jwt.sign({
         userId: this.id,
         email : this.email,

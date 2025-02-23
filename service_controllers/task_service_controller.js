@@ -1,5 +1,6 @@
 const grpc = require('@grpc/grpc-js');
 const taskService = require('../services/task_service');
+const { authUser } = require("../middleware/authorize");
 // Implement the TaskService
 const taskServiceImplementation = {
     CreateTask: async (call, callback) => {
@@ -8,7 +9,7 @@ const taskServiceImplementation = {
             const task = await taskService.createTask(title, description, userId);
             callback(null, { 
                 task: { 
-                    taskId: task.taskId.toString(),
+                    taskId: task._id.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -30,7 +31,7 @@ const taskServiceImplementation = {
             const task = await taskService.getTask(taskId);
             callback(null, { 
                 task: { 
-                    taskId: task.taskId.toString(),
+                    taskId: task._id.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -52,7 +53,7 @@ const taskServiceImplementation = {
             const task = await taskService.updateTask(taskId,title,description,status);
             callback(null, { 
                 task: { 
-                    taskId: task.taskId.toString(),
+                    taskId: task._id.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,
@@ -83,10 +84,10 @@ const taskServiceImplementation = {
     ListTasks: async (call, callback) => {
         const { userId} = call.request;
         try {
-            const tasks = await taskService.ListTasks(userId);
+            const tasks = await taskService.listTasks(userId);
             callback(null, { 
                 tasks: tasks.map(task => ({
-                    taskId: task.taskId.toString(),
+                    taskId: task._id.toString(),
                     title: task.title,
                     description: task.description,
                     status: task.status,

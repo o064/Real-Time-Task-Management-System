@@ -1,62 +1,79 @@
+const grpc = require('@grpc/grpc-js');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const createCustomError = require('../customError');
+
 require('dotenv').config();
 
-const authUser = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.SECRET, (err, decoded) => {
-            if (err) {
-                return next(createCustomError({ message: 'Invalid token. Please log in again.', status: 401 }));
-            }
-            req.user = decoded;
-            next();
+const authUser = (call, callback, next) => {
+    const metadata = call.metadata ? call.metadata.get('authorization') : [];
+    const token = metadata.length ? metadata[0] : null;
+    if (!token) {
+        return callback({
+            code: grpc.status.UNAUTHENTICATED,
+            message: 'No token provided. Please log in.',
         });
-    } else {
-        res.redirect("/login");
     }
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+        if (err) {
+            return callback({
+                code: grpc.status.UNAUTHENTICATED,
+                message: 'Invalid token. Please log in again.',
+            });
+        }
+        call.user = decoded; 
+        next(call, callback);;
+    });
 };
 
-const authAdmin = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.SECRET, (err, decoded) => {
-            if (err) {
-                return next(createCustomError({ message: 'Invalid token. Please log in again.', status: 401 }));
-            }
-            if (!decoded.isAdmin) {
-                return next(createCustomError({ message: 'Access denied. Admins only.', status: 403 }));
-            }
-            req.user = decoded; 
-            next();
+const authAdmin = (call, callback, next) => {
+    const metadata = call.metadata ? call.metadata.get('authorization') : [];
+    const token = metadata.length ? metadata[0] : null;
+    if (!token) {
+        callback({
+            code: grpc.status.UNAUTHENTICATED,
+            message: 'No token provided. Please log in.',
         });
-    } else {
-        return next(createCustomError({ message: 'No token provided. Please log in.', status: 401 }));
     }
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+        if (err) {
+            callback({
+                code: grpc.status.UNAUTHENTICATED,
+                message: 'Invalid token. Please log in again.',
+            });
+        }
+        if (!decoded.isAdmin) {
+            callback({
+                code: grpc.status.PERMISSION_DENIED,
+                message: 'Access denied. Admins only.',
+            });
+        }
+        call.user = decoded; 
+        next(call, callback);;
+    });
 };
 
-const checkUser = async (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-            if (err) {
-                res.locals.user = null;
-                return next(); 
-            }
-            try {
-                const user = await User.findById(decoded.id);
-                res.locals.user = user;
-            } catch (error) {
-                res.locals.user = null;
-                console.log('Error fetching user:', error);
-            }
-            next();
-        });
-    } else {
-        res.locals.user = null;
-        next();
+
+const checkUser = async (call, callback, next) => {
+    const metadata = call.metadata ? call.metadata.get('authorization') : [];
+
+    const token = metadata.length ? metadata[0] : null;
+    if (!token) {
+        call.user = null;
+        return  next(call, callback);
     }
+    jwt.verify(token, process.env.SECRET, async (err, decoded) => {
+        if (err) {
+            call.user = null;
+            return  next(call, callback);;
+        }
+        try {
+            const user = await User.findById(decoded.id);
+            call.user = user || null; 
+        } catch (error) {
+            call.user = null;
+            console.log('Error fetching user:', error);
+        }
+        next(call, callback);
+    });
 };
 
 module.exports = {
