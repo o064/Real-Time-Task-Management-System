@@ -5,26 +5,26 @@ const createUser = async (email, userName, password) => {
 };
 // Get a User by ID
 const getUser = async (userId) => {
-    const User = await User.findById(mongoose.Types.ObjectId(userId));
-    if (!User) throw new Error('User not found');
-    return User;
+    const user = await User.findById(userId);
+    if (!user) throw new Error('User not found');
+    return user;
 }
 
 // Update a User
 const updateUser = async (userId, userName) => {
-    const User = await User.findByIdAndUpdate(
-        mongoose.Types.ObjectId(userId),
+    const user = await User.findByIdAndUpdate(
+        userId,
         { userName, updatedAt: Date.now() },
         { new: true }
     );
-    if (!User) throw new Error('User not found');
-    return User;
+    if (!user) throw new Error('User not found');
+    return user;
 }
 
 // Delete a User
-const deleteUser = async (UserId) => {
-    const User = await User.findByIdAndDelete(mongoose.Types.ObjectId(UserId));
-    if (!User) throw new Error('User not found');
+const deleteUser = async (userId) => {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) throw new Error('User not found');
     return { success: true };
 }
 

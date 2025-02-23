@@ -19,16 +19,18 @@ const userServiceImplementation = {
             // Create Metadata
             const metadata = new grpc.Metadata();
             metadata.add('authorization', `Bearer ${token}`);
+            call.sendMetadata(metadata);
             callback(null, {
                 user: {
                     userId: user._id.toString(),
                     email: user.email,
                     userName: user.userName,
+                    password: user.password,
                     isAdmin: user.isAdmin,
                     createdAt: user.createdAt.toISOString(),
                     updatedAt: user.updatedAt.toISOString(),
                 }
-            }, metadata);
+            });
         } catch (err) {
             callback({
                 code: grpc.status.UNAUTHENTICATED,
@@ -46,6 +48,7 @@ const userServiceImplementation = {
                     email: user.email,
                     userName: user.userName,
                     password: user.password,
+                    isAdmin: user.isAdmin,
                     createdAt: user.createdAt.toISOString(),
                     updatedAt: user.updatedAt.toISOString(),
                 }
@@ -57,7 +60,7 @@ const userServiceImplementation = {
             });
         }
     },
-    GetUser: middleWareHelper(authAdmin,
+    GetUser: middleWareHelper(authUser,
         async (call, callback) => {
             const { userId } = call.request;
             try {
@@ -68,6 +71,7 @@ const userServiceImplementation = {
                         email: user.email,
                         userName: user.userName,
                         password: user.password,
+                        isAdmin: user.isAdmin,
                         createdAt: user.createdAt.toISOString(),
                         updatedAt: user.updatedAt.toISOString(),
                     }
@@ -95,6 +99,7 @@ const userServiceImplementation = {
                         email: user.email,
                         userName: user.userName,
                         password: user.password,
+                        isAdmin: user.isAdmin,
                         createdAt: user.createdAt.toISOString(),
                         updatedAt: user.updatedAt.toISOString(),
                     }

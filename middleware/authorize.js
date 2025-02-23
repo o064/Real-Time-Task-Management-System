@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const authUser = (call, callback, next) => {
     const metadata = call.metadata ? call.metadata.get('authorization') : [];
-    const token = metadata.length ? metadata[0] : null;
+    const token = metadata.length ? metadata[0].split(' ')[1] : null;
     if (!token) {
         return callback({
             code: grpc.status.UNAUTHENTICATED,
@@ -20,13 +20,13 @@ const authUser = (call, callback, next) => {
             });
         }
         call.user = decoded; 
-        next(call, callback);;
+        next(call, callback);
     });
 };
 
 const authAdmin = (call, callback, next) => {
     const metadata = call.metadata ? call.metadata.get('authorization') : [];
-    const token = metadata.length ? metadata[0] : null;
+    const token = metadata.length ? metadata[0].split(' ')[1] : null;
     if (!token) {
         callback({
             code: grpc.status.UNAUTHENTICATED,
@@ -37,7 +37,7 @@ const authAdmin = (call, callback, next) => {
         if (err) {
             callback({
                 code: grpc.status.UNAUTHENTICATED,
-                message: 'Invalid token. Please log in again.',
+                message: 'Invalid token.Please Log In.',
             });
         }
         if (!decoded.isAdmin) {

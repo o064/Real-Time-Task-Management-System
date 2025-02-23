@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
         // match: passwordRegex,
         validate: [validator.isStrongPassword, "Enter a stronger password: At least 8 characters, including 1 lowercase, 1 uppercase, 1 number, and 1 symbol"]
     },
-    iAdmin: {
+    isAdmin: {
         type: Boolean,
         default: false
     },
