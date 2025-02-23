@@ -52,32 +52,31 @@ const authAdmin = (call, callback, next) => {
 };
 
 
-const checkUser = async (call, callback, next) => {
-    const metadata = call.metadata ? call.metadata.get('authorization') : [];
-
-    const token = metadata.length ? metadata[0] : null;
-    if (!token) {
-        call.user = null;
-        return  next(call, callback);
-    }
-    jwt.verify(token, process.env.SECRET, async (err, decoded) => {
-        if (err) {
-            call.user = null;
-            return  next(call, callback);;
-        }
-        try {
-            const user = await User.findById(decoded.id);
-            call.user = user || null; 
-        } catch (error) {
-            call.user = null;
-            console.log('Error fetching user:', error);
-        }
-        next(call, callback);
-    });
-};
+// const checkUser = async (call, callback, next) => {
+//     const metadata = call.metadata ? call.metadata.get('authorization') : [];
+//     const token = metadata.length ? metadata[0] : null;
+//     if (!token) {
+//         call.user = null;
+//         return  next(call, callback);
+//     }
+//     jwt.verify(token, process.env.SECRET, async (err, decoded) => {
+//         if (err) {
+//             call.user = null;
+//             return  next(call, callback);;
+//         }
+//         try {
+//             const user = await User.findById(decoded.id);
+//             call.user = user || null; 
+//         } catch (error) {
+//             call.user = null;
+//             console.log('Error fetching user:', error);
+//         }
+//         next(call, callback);
+//     });
+// };
 
 module.exports = {
     authUser,
     authAdmin,
-    checkUser
+    //checkUser
 };

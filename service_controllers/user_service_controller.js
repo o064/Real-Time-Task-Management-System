@@ -2,6 +2,12 @@ const grpc = require('@grpc/grpc-js');
 const UserService = require('../services/user_service');
 const User = require('../database/models/User')
 const { authUser, authAdmin } = require("../middleware/authorize");
+
+// Helper function to apply middleware
+const middleWareHelper = (middleware, handler) => (call, callback) => {
+    middleware(call, callback, handler);
+};
+
 // Implement the UserService
 const userServiceImplementation = {
     LoginUser: async (call, callback) => {
@@ -51,7 +57,7 @@ const userServiceImplementation = {
             });
         }
     },
-    GetUser:
+    GetUser: middleWareHelper(authAdmin,
         async (call, callback) => {
             const { userId } = call.request;
             try {
@@ -73,11 +79,15 @@ const userServiceImplementation = {
                 });
             }
         }
+    )
     ,
-    UpdateUser: 
+    UpdateUser: middleWareHelper(authUser,
         async (call, callback) => {
             const { userId, userName } = call.request;
             try {
+                if(userId  != call.user.userId){
+                    throw Error('You cannot update that user');
+                }
                 const user = await UserService.updateUser(userId, userName);
                 callback(null, {
                     user: {
@@ -96,8 +106,9 @@ const userServiceImplementation = {
                 });
             }
         }
+    )
     ,
-    DeleteUser: 
+    DeleteUser: middleWareHelper(authAdmin,
         async (call, callback) => {
             const { userId } = call.request;
             try {
@@ -110,6 +121,8 @@ const userServiceImplementation = {
                 });
             }
         }
+    )
+
 };
 module.exports = userServiceImplementation
 
