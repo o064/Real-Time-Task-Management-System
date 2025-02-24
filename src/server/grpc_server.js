@@ -11,8 +11,8 @@ const loadProto = (path) => {
     }));
 };
 
-const taskProto = loadProto(__dirname + '/../proto/task.proto').task;
-const userProto = loadProto(__dirname + '/../proto/user.proto').user;
+const taskProto = loadProto(__dirname + '/../../proto/Task.proto').task;
+const userProto = loadProto(__dirname + '/../../proto/User.proto').user;
 
 // Start the gRPC server
 const startGrpcServer = ()=>{

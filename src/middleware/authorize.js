@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken');
 
 require('dotenv').config();
 
+// Helper function to apply middleware
+const middleWareHelper = (middleware, handler) => (call, callback) => {
+    middleware(call, callback, handler);
+};
+
 const authUser = (call, callback, next) => {
     const metadata = call.metadata ? call.metadata.get('authorization') : [];
     const token = metadata.length ? metadata[0].split(' ')[1] : null;
@@ -78,5 +83,6 @@ const authAdmin = (call, callback, next) => {
 module.exports = {
     authUser,
     authAdmin,
+    middleWareHelper
     //checkUser
 };

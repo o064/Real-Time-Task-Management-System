@@ -11,7 +11,7 @@ const TaskSchema = new mongoose.Schema({
     },
     description: { 
         type: String,
-        required: true,
+        required: [true, "description is required"],
         match: textRegex
     }
     ,
@@ -20,7 +20,7 @@ const TaskSchema = new mongoose.Schema({
         enum: ["Pending", "In Progress", "Completed"],
         default: "Pending",
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: String, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
 },
@@ -31,6 +31,6 @@ const TaskSchema = new mongoose.Schema({
 }
 ,{timestamps:true});
 
-const Task = mongoose.model("Item", TaskSchema);
+const Task = mongoose.model("Tasks", TaskSchema);
 
 module.exports = Task;

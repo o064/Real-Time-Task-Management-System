@@ -1,53 +1,59 @@
 const grpc = require('@grpc/grpc-js');
 const taskService = require('../services/task_service');
-const { authUser } = require("../middleware/authorize");
+const { authUser , middleWareHelper } = require("../middleware/authorize");
 // Implement the TaskService
 const taskServiceImplementation = {
-    CreateTask: async (call, callback) => {
-        const { title, description, userId } = call.request;
-        try {
-            const task = await taskService.createTask(title, description, userId);
-            callback(null, { 
-                task: { 
-                    taskId: task._id.toString(),
-                    title: task.title,
-                    description: task.description,
-                    status: task.status,
-                    userId: task.userId.toString(),
-                    createdAt: task.createdAt.toISOString(),
-                    updatedAt: task.updatedAt.toISOString(),
-                } 
-            });
-        } catch (err) {
-            callback({
-                code: grpc.status.INTERNAL,
-                message: err.message,
-            });
+    CreateTask:middleWareHelper(authUser,
+        async (call, callback) => {
+            const { title, description } = call.request;
+            const {userId} = call.user; // user from middle auth  
+            try {
+                const task = await taskService.createTask(title, description, userId);
+                callback(null, { 
+                    task: { 
+                        taskId: task._id.toString(),
+                        title: task.title,
+                        description: task.description,
+                        status: task.status,
+                        userId: task.userId.toString(),
+                        createdAt: task.createdAt.toISOString(),
+                        updatedAt: task.updatedAt.toISOString(),
+                    } 
+                });
+            } catch (err) {
+                callback({
+                    code: grpc.status.INTERNAL,
+                    message: err.message,
+                });
+            }
         }
-    },
-    GetTask: async (call, callback) => {
-        const { taskId } = call.request;
-        try {
-            const task = await taskService.getTask(taskId);
-            callback(null, { 
-                task: { 
-                    taskId: task._id.toString(),
-                    title: task.title,
-                    description: task.description,
-                    status: task.status,
-                    userId: task.userId.toString(),
-                    createdAt: task.createdAt.toISOString(),
-                    updatedAt: task.updatedAt.toISOString(),
-                }  
-            });
-        } catch (err) {
-            callback({
-                code: grpc.status.NOT_FOUND,
-                message: err.message,
-            });
+    ),
+    GetTask:middleWareHelper(authUser,
+        async (call, callback) => {
+            const { taskId } = call.request;
+            try {
+                const task = await taskService.getTask(taskId);
+                callback(null, { 
+                    task: { 
+                        taskId: task._id.toString(),
+                        title: task.title,
+                        description: task.description,
+                        status: task.status,
+                        userId: task.userId.toString(),
+                        createdAt: task.createdAt.toISOString(),
+                        updatedAt: task.updatedAt.toISOString(),
+                    }  
+                });
+            } catch (err) {
+                callback({
+                    code: grpc.status.NOT_FOUND,
+                    message: err.message,
+                });
+            }
         }
-    },
-    UpdateTask: async (call, callback) => {
+    ) ,
+    UpdateTask: middleWareHelper(authUser,
+        async (call, callback) => {
         const { taskId,title,description,status } = call.request;
         try {
             const task = await taskService.updateTask(taskId,title,description,status);
@@ -68,8 +74,9 @@ const taskServiceImplementation = {
                 message: err.message,
             });
         }
-    },
-    DeleteTask: async (call, callback) => {
+    }),
+    DeleteTask: middleWareHelper(authUser,
+        async (call, callback) => {
         const { taskId } = call.request;
         try {
             const result  = await taskService.deleteTask(taskId);
@@ -80,8 +87,8 @@ const taskServiceImplementation = {
                 message: err.message,
             });
         }
-    },
-    ListTasks: async (call, callback) => {
+    }),
+    ListTasks: middleWareHelper(authUser,async (call, callback) => {
         const { userId} = call.request;
         try {
             const tasks = await taskService.listTasks(userId);
@@ -102,6 +109,6 @@ const taskServiceImplementation = {
                 message: err.message,
             });
         }
-    }
+    })
 };
 module.exports = taskServiceImplementation

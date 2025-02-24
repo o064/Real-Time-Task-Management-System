@@ -1,12 +1,8 @@
 const grpc = require('@grpc/grpc-js');
 const UserService = require('../services/user_service');
 const User = require('../database/models/User')
-const { authUser, authAdmin } = require("../middleware/authorize");
+const { authUser, authAdmin ,middleWareHelper } = require("../middleware/authorize");
 
-// Helper function to apply middleware
-const middleWareHelper = (middleware, handler) => (call, callback) => {
-    middleware(call, callback, handler);
-};
 
 // Implement the UserService
 const userServiceImplementation = {
