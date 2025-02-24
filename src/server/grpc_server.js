@@ -1,15 +1,7 @@
 const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
 const taskServiceImplementation = require('../service_controllers/task_service_controller');
 const userServiceImplementation = require('../service_controllers/user_service_controller');
-
-
-// Load Protobuf definitions
-const loadProto = (path) => {
-    return grpc.loadPackageDefinition(protoLoader.loadSync(path, {
-        keepCase: true, longs: String, enums: String, defaults: true, oneofs: true,
-    }));
-};
+const {loadProto} =require('../../utils/grpc');
 
 const taskProto = loadProto(__dirname + '/../../proto/Task.proto').task;
 const userProto = loadProto(__dirname + '/../../proto/User.proto').user;
@@ -25,4 +17,4 @@ const startGrpcServer = ()=>{
     
 }
 
-module.exports=startGrpcServer;
+module.exports= startGrpcServer;

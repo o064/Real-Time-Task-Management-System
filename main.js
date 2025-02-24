@@ -1,22 +1,14 @@
+const express = require('express');
+const app = express();
 const connectDB = require('./src/database/connection/db');
-const startGrpcServer =require('./src/server/grpc_server')
-// const cookieParser = require('cookie-parser');
+const startGrpcServer =require('./src/server/grpc_server');
 
 //config
-
 require('dotenv').config();
 
 // Connect to database
-
 connectDB();  
 
 
-// middleware
-
-
 //start grpc server
-
 startGrpcServer();
-
-
-

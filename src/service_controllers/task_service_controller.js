@@ -31,8 +31,9 @@ const taskServiceImplementation = {
     GetTask:middleWareHelper(authUser,
         async (call, callback) => {
             const { taskId } = call.request;
+            const {userId} = call.user; // user from middle auth  
             try {
-                const task = await taskService.getTask(taskId);
+                const task = await taskService.getTask(taskId,userId);
                 callback(null, { 
                     task: { 
                         taskId: task._id.toString(),
@@ -55,8 +56,9 @@ const taskServiceImplementation = {
     UpdateTask: middleWareHelper(authUser,
         async (call, callback) => {
         const { taskId,title,description,status } = call.request;
+        const {userId} = call.user; // user from middle auth  
         try {
-            const task = await taskService.updateTask(taskId,title,description,status);
+            const task = await taskService.updateTask(taskId,title,description,status,userId);
             callback(null, { 
                 task: { 
                     taskId: task._id.toString(),
